@@ -8,8 +8,10 @@ void draw_row_callback(GContext *ctx, Layer *cell_layer, MenuIndex *cell_index, 
    switch(cell_index->row)
     {
     case 0:
-        menu_cell_basic_draw(ctx, cell_layer, "1. Apple", "Green and crispy!", NULL);
+        menu_cell_basic_draw(ctx, cell_layer, "Alarm 1", "Wakey Wakey", NULL);
         break;
+    case 1:
+        menu_cell_basic_draw(ctx, cell_layer, "Alarm 2", "Wake up", NULL);
     default:
         // Type some shit in here
         break;
@@ -24,7 +26,26 @@ uint16_t num_rows_callback(MenuLayer *menu_layer, uint16_t section_index, void *
 void select_click_callback(MenuLayer *menu_layer, MenuIndex *cell_index, void *callback_context)
 {
    // Get which row was selected
-   int rowIndex = cell_index->row;
+   int which = cell_index->row;
+  
+  //The array that will hold the on/off vibration times
+	uint32_t segments[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+	
+	//Build the pattern
+	for(int i = 0; i < which + 1; i++) 
+	{
+		segments[2 * i] = 200;
+		segments[(2 * i) + 1] = 100;
+	}
+	
+	//Create a VibePattern data structure
+	VibePattern pattern = {
+		.durations = segments,
+		.num_segments = 16
+	};
+	
+	//Do the vibration pattern!
+	vibes_enqueue_custom_pattern(pattern);
 }
  
 void window_load(Window *window)
