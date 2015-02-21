@@ -3,14 +3,14 @@
     "capabilities": [
         ""
     ],
-    "companyName": "devinzwe2014@gmail.com",
-    "longName": "IntelliWatch",
+    "companyName": "projectprogramamark@gmail.com",
+    "longName": "intelligentAlarm",
     "projectType": "native",
     "resources": {
         "media": []
     },
-    "shortName": "IntelliWatch",
-    "uuid": "6d8d5794-1d0b-4067-9b28-df93a0723fd1",
+    "shortName": "intelligentAlarm",
+    "uuid": "4e61b03a-688e-4991-be7d-830dbed76590",
     "versionCode": 1,
     "versionLabel": "1.0",
     "watchapp": {

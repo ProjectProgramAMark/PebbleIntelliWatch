@@ -1,60 +1,76 @@
 #include <pebble.h>
+ 
+Window* window;
+MenuLayer *menu_layer;
 
-//Defining some shit
-static Window *window;
-static Window *menu_window;
-
-static SimpleMenuLayer *menu_settings;
-//static SimpleMenuItem menu_items[1];
-static SimpleMenuSection menu_sections[1];
-
-//Array for menu items
-char *item_names[1] = { "00:00"};
-
-//Some methods over here and shit
-void handle_init(void) {
-	// Create a window and text layer
-	window = window_create();
-	//text_layer = text_layer_create(GRect(0, 0, 144, 154));
-	
-  // Set the text, font, and text alignment
-	//text_layer_set_text(text_layer, "I am an alarm clock! What would you like to do?");
-	//text_layer_set_font(text_layer, fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD));
-	//text_layer_set_text_alignment(text_layer, GTextAlignmentCenter);
-	  
-  
-	// Add the text layer to the window
-  Layer *layer = window_get_root_layer(menu_window);
-  
-	layer_add_child(layer, simple_menu_layer_get_layer(menu_settings));
-
-  menu_settings = simple_menu_layer_create(layer_get_bounds(layer),
-			            menu_window, menu_sections, 1, NULL);
-  
-  simple_menu_layer_set_selected_index(menu_settings, 0, true);
-  layer_add_child(window_get_root_layer(window), simple_menu_layer_get_layer(menu_settings));
-  
-	// Push the window
-	window_stack_push(window, true);
-	
-	// App Logging!
-	APP_LOG(APP_LOG_LEVEL_DEBUG, "Just pushed a window!");
-}
-
-void handle_deinit(void) {
-	// Destroy the text layer
-	//text_layer_destroy(text_layer);
-  
-  layer_destroy(window_get_root_layer(menu_window));
-	simple_menu_layer_destroy(menu_settings);
-	window_destroy(menu_window);
-	
-	// Destroy the window
-	window_destroy(window);
-}
-int main(void) {
-	handle_init();
-	app_event_loop();
-	handle_deinit();
+void draw_row_callback(GContext *ctx, Layer *cell_layer, MenuIndex *cell_index, void *callback_context)
+{
+   switch(cell_index->row)
+    {
+    case 0:
+        menu_cell_basic_draw(ctx, cell_layer, "1. Apple", "Green and crispy!", NULL);
+        break;
+    default:
+        // Type some shit in here
+        break;
+    }
 }
  
+uint16_t num_rows_callback(MenuLayer *menu_layer, uint16_t section_index, void *callback_context)
+{
+   return 2;
+}
+ 
+void select_click_callback(MenuLayer *menu_layer, MenuIndex *cell_index, void *callback_context)
+{
+   // Get which row was selected
+   int rowIndex = cell_index->row;
+}
+ 
+void window_load(Window *window)
+{
+    //Create it - 12 is approx height of the top bar
+    menu_layer = menu_layer_create(GRect(0, 0, 144, 168 - 16));
+ 
+    //Let it receive clicks
+    menu_layer_set_click_config_onto_window(menu_layer, window);
+ 
+    //Give it its callbacks
+    MenuLayerCallbacks callbacks = {
+        .draw_row = (MenuLayerDrawRowCallback) draw_row_callback,
+        .get_num_rows = (MenuLayerGetNumberOfRowsInSectionsCallback) num_rows_callback,
+        .select_click = (MenuLayerSelectCallback) select_click_callback
+    };
+    menu_layer_set_callbacks(menu_layer, NULL, callbacks);
+ 
+    //Add to Window
+    layer_add_child(window_get_root_layer(window), menu_layer_get_layer(menu_layer));
+}
+ 
+void window_unload(Window *window)
+{
+    menu_layer_destroy(menu_layer);
+}
+ 
+void init()
+{
+    window = window_create();
+    WindowHandlers handlers = {
+        .load = window_load,
+        .unload = window_unload
+    };
+    window_set_window_handlers(window, (WindowHandlers) handlers);
+    window_stack_push(window, true);
+}
+ 
+void deinit()
+{
+    window_destroy(window);
+}
+ 
+int main(void)
+{
+    init();
+    app_event_loop();
+    deinit();
+}
