@@ -1,0 +1,19 @@
+{
+    "appKeys": {},
+    "capabilities": [
+        ""
+    ],
+    "companyName": "projectprogramamark@gmail.com",
+    "longName": "intelligentAlarm",
+    "projectType": "native",
+    "resources": {
+        "media": []
+    },
+    "shortName": "intelligentAlarm",
+    "uuid": "4e61b03a-688e-4991-be7d-830dbed76590",
+    "versionCode": 1,
+    "versionLabel": "1.0",
+    "watchapp": {
+        "watchface": false
+    }
+}
