@@ -90,6 +90,20 @@ void click_config_provider(void *context) {
   window_single_click_subscribe(BUTTON_ID_UP, up_down_click_handler);
 }
 
+void select_single_click_handler(ClickRecognizerRef recognizer, void *context) {
+  // Pop back to inital window
+  window_stack_pop(false);
+  window_stack_pop(false);
+  window_stack_pop(false);
+  window_stack_pop(false);
+  window_stack_pop(false);
+}
+
+void config_provider(Window *window) {
+ // single click / repeat-on-hold config:
+  window_single_click_subscribe(BUTTON_ID_SELECT, select_single_click_handler);
+}
+
 void window_load(Window *window)
 {
   alarmSetNotif = text_layer_create(GRect(0, 40, 144, 100));
@@ -98,6 +112,8 @@ void window_load(Window *window)
   text_layer_set_overflow_mode(alarmSetNotif, GTextOverflowModeWordWrap);
   text_layer_set_text(alarmSetNotif, "Your alarm has been set.");
   layer_add_child(window_get_root_layer(s_window), text_layer_get_layer(alarmSetNotif));
+  
+  window_set_click_config_provider(s_window, (ClickConfigProvider) config_provider);
 }
 
 void window_unload(Window *window)
