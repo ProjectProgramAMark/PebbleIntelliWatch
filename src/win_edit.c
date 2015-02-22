@@ -19,10 +19,15 @@ static TextLayer *s_am_pm_textlayer;
 
 static NumberWindow *hour_window,*minute_window;
 
+static TextLayer *alarmSetNotif;
+
 static void progress_to_minutes(NumberWindow *window,void* context);
 static void progress_to_home(NumberWindow *window, void* context);
 
 static bool s_is_am;
+
+int32_t num_of_hours = 1;
+int32_t num_of_minutes = 0;
 
 void win_edit_init(void)
 {
@@ -53,12 +58,12 @@ static void up_down_click_handler(ClickRecognizerRef recognizer, void *context) 
 
 void progress_to_minutes(NumberWindow *window,void* context)
 {
-  temp_alarm.hour = number_window_get_value(window);
+  num_of_hours = number_window_get_value(hour_window);
   minute_window = number_window_create("Minutes",(NumberWindowCallbacks){.selected=progress_to_home},NULL);
   number_window_set_min(minute_window, 0);
   number_window_set_max(minute_window, 59);
   window_stack_push(number_window_get_window(minute_window),true);
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Fired.");
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Hours %lu", num_of_hours);
 }
 
 void progress_to_home(NumberWindow *window, void* context)
@@ -85,12 +90,17 @@ void click_config_provider(void *context) {
 
 void window_load(Window *window)
 {
-  
+  alarmSetNotif = text_layer_create(GRect(0, 40, 144, 100));
+  text_layer_set_text_alignment(alarmSetNotif, GTextAlignmentCenter);
+  text_layer_set_font(alarmSetNotif, fonts_get_system_font(FONT_KEY_GOTHIC_28));
+  text_layer_set_overflow_mode(alarmSetNotif, GTextOverflowModeWordWrap);
+  text_layer_set_text(alarmSetNotif, "Your alarm has been set.");
+  layer_add_child(window_get_root_layer(s_window), text_layer_get_layer(alarmSetNotif));
 }
 
 void window_unload(Window *window)
 {
- 
+  text_layer_destroy(alarmSetNotif);
 }
 
 void am_pm_window_load(Window* window)
