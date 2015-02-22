@@ -29,6 +29,8 @@ static bool s_is_am;
 int32_t num_of_hours = 1;
 int32_t num_of_minutes = 0;
 
+void updateAlarmUIWithTime(int32_t *h, int32_t *m); // Defined in main.c
+
 void win_edit_init(void)
 {
   s_window = window_create();
@@ -71,6 +73,8 @@ void progress_to_home(NumberWindow *window, void* context)
   // Storing the number of minutes
   num_of_minutes = number_window_get_value(minute_window);
   //temp_alarm.minute = number_window_get_value(window);
+  //Pass numHours & numMinutes to main
+  updateAlarmUIWithTime(&num_of_hours, &num_of_minutes);
   window_stack_push(s_window,true);
 }
 

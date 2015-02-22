@@ -4,6 +4,16 @@ Window* window;
 MenuLayer *menu_layer;
 void showDetail(MenuIndex* index); // Defined in detailView.c
 
+int32_t hours;
+int32_t minutes;
+
+void updateAlarmUIWithTime(int32_t *h, int32_t *m)
+{
+  hours = *h;
+  minutes = *m;
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "H: %lu M: %lu", *h, *m);
+}
+
 
 // Main window callbacks
 //
