@@ -14,6 +14,8 @@ static TextLayer *s_am_pm_textlayer;
 
 static NumberWindow *hour_window,*minute_window;
 
+static void progress_to_minutes(NumberWindow *window,void* context);
+
 static bool s_is_am;
 
 void win_edit_init(void)
@@ -43,9 +45,22 @@ static void up_down_click_handler(ClickRecognizerRef recognizer, void *context) 
   }
 }
 
+void progress_to_minutes(NumberWindow *window,void* context)
+{
+  minute_window = number_window_create("Minutes",(NumberWindowCallbacks){.selected=progress_to_minutes},NULL);
+  number_window_set_min(minute_window, 0);
+  number_window_set_max(minute_window, 59);
+  window_stack_push(number_window_get_window(minute_window),true);
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Fired.");
+}
+
 static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
   //Launch hour window yo
-  //window_stack_push(number_window_get_window(hour_window),true);
+  hour_window = number_window_create("Hour",(NumberWindowCallbacks){.selected=progress_to_minutes},NULL);
+  number_window_set_min(hour_window,1);
+  number_window_set_max(hour_window,12);
+  window_stack_push(number_window_get_window(hour_window),true);
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Middle button selected on AM/PM.");
 }
 
 void click_config_provider(void *context) {
