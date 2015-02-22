@@ -1,5 +1,10 @@
 #include <pebble.h>
 #include "win_edit.h"
+#include "alarm_wakeup.h"
+  
+  
+static Alarm temp_alarm;
+static Alarm *current_alarm;
 
 static void am_pm_window_load(Window* window);
 static void am_pm_window_unload(Window* window);
@@ -48,6 +53,7 @@ static void up_down_click_handler(ClickRecognizerRef recognizer, void *context) 
 
 void progress_to_minutes(NumberWindow *window,void* context)
 {
+  temp_alarm.hour = number_window_get_value(window);
   minute_window = number_window_create("Minutes",(NumberWindowCallbacks){.selected=progress_to_home},NULL);
   number_window_set_min(minute_window, 0);
   number_window_set_max(minute_window, 59);
@@ -57,6 +63,7 @@ void progress_to_minutes(NumberWindow *window,void* context)
 
 void progress_to_home(NumberWindow *window, void* context)
 {
+  temp_alarm.minute = number_window_get_value(window);
   window_stack_push(s_window,true);
 }
 
@@ -83,7 +90,7 @@ void window_load(Window *window)
 
 void window_unload(Window *window)
 {
-  window_destroy(s_window);
+ 
 }
 
 void am_pm_window_load(Window* window)
@@ -107,5 +114,12 @@ void am_pm_window_unload(Window *window)
   action_bar_layer_destroy(s_am_pm_actionbar);
   text_layer_destroy(s_am_pm_textlayer);
   
+}
+
+void win_edit_deinit()
+{
+   window_destroy(s_window);
+   number_window_destroy(hour_window);
+   number_window_destroy(minute_window);  
 }
 
