@@ -3,8 +3,28 @@
 void alarm_schedule_wakeup(Alarm *alarm) {
     bool some_active=false;
     alarm_cancel_wakeup(alarm);
+    static int weekday_names[7];
+
     time_t timestamp = clock_to_timestamp(TODAY,alarm->hour,alarm->minute);
     
+    int hour_out = alarm->hour;
+    bool is_am = false;
+    if (!clock_is_24h_style()) {
+    convert_24_to_12(alarm->hour, &hour_out, &is_am);
+
+   // draw active weekdays
+  char weekday_state[10];
+  snprintf(weekday_state,sizeof(weekday_state),"%c%c%c%c%c\n%c%c",
+           alarm->weekdays_active[1]?weekday_names[1]:'_',
+           alarm->weekdays_active[2]?weekday_names[2]:'_',
+           alarm->weekdays_active[3]?weekday_names[3]:'_',
+           alarm->weekdays_active[4]?weekday_names[4]:'_',
+           alarm->weekdays_active[5]?weekday_names[5]:'_',
+           alarm->weekdays_active[6]?weekday_names[6]:'_',
+           alarm->weekdays_active[0]?weekday_names[0]:'_');
+  
+}
+
     if(alarm->enabled) {
         // Calculate time to wake up
         time_t now = time(NULL);
