@@ -15,16 +15,17 @@ static TextLayer *s_am_pm_textlayer;
 static NumberWindow *hour_window,*minute_window;
 
 static void progress_to_minutes(NumberWindow *window,void* context);
+static void progress_to_home(NumberWindow *window, void* context);
 
 static bool s_is_am;
 
 void win_edit_init(void)
 {
-  /*s_window = window_create();
+  s_window = window_create();
   window_set_window_handlers(s_window, (WindowHandlers) {
     .load = window_load,
     .unload = window_unload
-  });*/
+  });
   
   s_am_pm_window = window_create();
   window_set_window_handlers(s_am_pm_window, (WindowHandlers) {
@@ -47,11 +48,16 @@ static void up_down_click_handler(ClickRecognizerRef recognizer, void *context) 
 
 void progress_to_minutes(NumberWindow *window,void* context)
 {
-  minute_window = number_window_create("Minutes",(NumberWindowCallbacks){.selected=progress_to_minutes},NULL);
+  minute_window = number_window_create("Minutes",(NumberWindowCallbacks){.selected=progress_to_home},NULL);
   number_window_set_min(minute_window, 0);
   number_window_set_max(minute_window, 59);
   window_stack_push(number_window_get_window(minute_window),true);
   APP_LOG(APP_LOG_LEVEL_DEBUG, "Fired.");
+}
+
+void progress_to_home(NumberWindow *window, void* context)
+{
+  window_stack_push(s_window,true);
 }
 
 static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
@@ -102,3 +108,4 @@ void am_pm_window_unload(Window *window)
   text_layer_destroy(s_am_pm_textlayer);
   
 }
+
