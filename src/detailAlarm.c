@@ -4,6 +4,8 @@ Window* detailW;
 TextLayer* detailW_text;
 MenuLayer* detail_menu;
 
+void win_edit_init(void); //import from win_edit.c
+
 
 static void draw_row_callback(GContext *ctx, Layer *cell_layer, MenuIndex *cell_index, void *callback_context)
 {
@@ -30,6 +32,17 @@ static void select_click_callback(MenuLayer *menu_layer, MenuIndex *cell_index, 
 {
    // Get which row was selected
    int rowIndex = cell_index->row;
+  
+   switch(cell_index->row)
+   {
+     case 0:
+       break;
+     case 1:
+       win_edit_init();
+       break;
+     case 2:
+       break;
+   }
 }
 
 void detailUnload(Window* win)
@@ -37,6 +50,7 @@ void detailUnload(Window* win)
 	APP_LOG(APP_LOG_LEVEL_INFO, "Destroying Detail Window.");
 	text_layer_destroy(detailW_text);
 	window_destroy(detailW);
+  menu_layer_destroy(detail_menu);
 }
 
 void showDetail(MenuIndex* index)
@@ -63,13 +77,6 @@ void showDetail(MenuIndex* index)
    
       //Add to Window
       layer_add_child(window_get_root_layer(detailW), menu_layer_get_layer(detail_menu));
-    
-    	/*detailW_text = text_layer_create(GRect(0,52,144,40));
-    	text_layer_set_text_alignment(detailW_text, GTextAlignmentCenter); // Center the text.
-	    text_layer_set_font(detailW_text, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));
-
-    	text_layer_set_text(detailW_text, "Testing");
-    	layer_add_child(window_get_root_layer(detailW), text_layer_get_layer(detailW_text));*/
 
 	    window_stack_push(detailW, true); // The back button will dismiss the current window, not close the app.  So just press back to go back to the master view.
 }
