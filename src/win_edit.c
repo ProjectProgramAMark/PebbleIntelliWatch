@@ -68,7 +68,9 @@ void progress_to_minutes(NumberWindow *window,void* context)
 
 void progress_to_home(NumberWindow *window, void* context)
 {
-  temp_alarm.minute = number_window_get_value(window);
+  // Storing the number of minutes
+  num_of_minutes = number_window_get_value(minute_window);
+  //temp_alarm.minute = number_window_get_value(window);
   window_stack_push(s_window,true);
 }
 
